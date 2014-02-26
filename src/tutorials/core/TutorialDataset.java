@@ -15,7 +15,7 @@
  * along with the Java Machine Learning Library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
- * Copyright (c) 2006-2009, Thomas Abeel
+ * Copyright (c) 2006-2012, Thomas Abeel
  * 
  * Project: http://java-ml.sourceforge.net/
  * 
@@ -48,7 +48,7 @@ import net.sf.javaml.tools.InstanceTools;
  * @see net.sf.javaml.core.DefaultDataset
  * @see net.sf.javaml.tools.InstanceTools
  * 
- * @version 0.1.5
+ * @version 0.1.7
  * 
  * @author Thomas Abeel
  * 

@@ -20,31 +20,42 @@
  * Project: http://java-ml.sourceforge.net/
  * 
  */
-package tutorials.featureselection;
+package tutorials.tools;
 
 import java.io.File;
+import java.util.Map;
 
+import libsvm.LibSVM;
+import net.sf.javaml.classification.Classifier;
+import net.sf.javaml.classification.evaluation.EvaluateDataset;
+import net.sf.javaml.classification.evaluation.PerformanceMeasure;
 import net.sf.javaml.core.Dataset;
-import net.sf.javaml.featureselection.scoring.GainRatio;
+import net.sf.javaml.sampling.Sampling;
 import net.sf.javaml.tools.data.FileHandler;
+import be.abeel.util.Pair;
 
-public class TutorialFeatureScoring {
-    /**
-     * Shows the basic steps to create use a feature scoring algorithm.
-     * 
-     * @author Thomas Abeel
-     * 
-     */
-    public static void main(String[] args) throws Exception {
-        /* Load the iris data set */
-        Dataset data = FileHandler.loadDataset(new File("devtools/data/iris.data"), 4, ",");
+/**
+ * Sample program illustrating how to use sampling.
+ * 
+ * @author Thomas Abeel
+ * 
+ */
+public class TutorialSampling {
 
-        GainRatio ga = new GainRatio();
-        /* Apply the algorithm to the data set */
-        ga.build(data);
-        /* Print out the score of each attribute */
-        for (int i = 0; i < ga.noAttributes(); i++)
-            System.out.println(ga.score(i));
-    }
+	public static void main(String[] args) throws Exception {
 
+		Dataset data = FileHandler.loadDataset(new File("devtools/data/iris.data"), 4, ",");
+
+		Sampling s = Sampling.SubSampling;
+
+		for (int i = 0; i < 5; i++) {
+			Pair<Dataset, Dataset> datas = s.sample(data, (int) (data.size() * 0.8), i);
+			Classifier c = new LibSVM();
+			c.buildClassifier(datas.x());
+			Map<Object,PerformanceMeasure> pms = EvaluateDataset.testDataset(c, datas.y());
+			System.out.println(pms);
+
+		}
+
+	}
 }

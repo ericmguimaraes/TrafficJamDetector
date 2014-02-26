@@ -20,31 +20,42 @@
  * Project: http://java-ml.sourceforge.net/
  * 
  */
-package tutorials.featureselection;
+package tutorials;
 
 import java.io.File;
+import java.io.IOException;
 
 import net.sf.javaml.core.Dataset;
-import net.sf.javaml.featureselection.scoring.GainRatio;
 import net.sf.javaml.tools.data.FileHandler;
 
-public class TutorialFeatureScoring {
-    /**
-     * Shows the basic steps to create use a feature scoring algorithm.
-     * 
-     * @author Thomas Abeel
-     * 
-     */
-    public static void main(String[] args) throws Exception {
-        /* Load the iris data set */
-        Dataset data = FileHandler.loadDataset(new File("devtools/data/iris.data"), 4, ",");
+/**
+ * Tutorial data sets
+ * 
+ * @author Thomas Abeel
+ */
+public enum TutorialData {
 
-        GainRatio ga = new GainRatio();
-        /* Apply the algorithm to the data set */
-        ga.build(data);
-        /* Print out the score of each attribute */
-        for (int i = 0; i < ga.noAttributes(); i++)
-            System.out.println(ga.score(i));
-    }
+	IRIS("devtools/data/iris.data", 4, ",",null), SPARSE(
+			"devtools/data/sparse.tsv", 0, " ",":");
+
+	private String file;
+	private int classIndex;
+	private String sep;
+	private String sep2;
+
+	private TutorialData(String file, int classindex, String sep, String sep2) {
+		this.file = file;
+		this.classIndex = classindex;
+		this.sep = sep;
+		this.sep2 = sep2;
+	}
+
+	public Dataset load() throws IOException {
+		if (sep2 == null)
+			return FileHandler.loadDataset(new File(file), classIndex, sep);
+		else
+			return FileHandler.loadSparseDataset(new File(file), classIndex,
+					sep, sep2);
+	}
 
 }
