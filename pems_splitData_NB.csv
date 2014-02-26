@@ -1,4 +1,3 @@
-"fk_pems_id"	"unixtime"	"flows1"	"flows2"	"flows3"	"flows4"	"flows5"	"occs1"	"occs2"	"occs3"	"occs4"	"occs5"	"est_vel_kmh1"	"est_vel_kmh2"	"est_vel_kmh3"	"est_vel_kmh4"	"est_vel_kmh5"	"avg_vel_kmh"	"traffic"
 400041	1202522100	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	"Ruim"
 400716	1202521410	12	0	10	16	0	0.1333	0	0.2656	0.2922	0	39.9699924981	0	16.7168674699	24.3121149897	0	16.1997949915	"Ruim"
 401062	1202512770	0	0	7	2	0	0	0	0.4467	0.8256	0	0	0	6.9576897246	1.0755813953	0	1.606654224	"Ruim"

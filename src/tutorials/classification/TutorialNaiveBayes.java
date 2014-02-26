@@ -68,7 +68,6 @@ public class TutorialNaiveBayes {
 				correct++;
 			else {
 				wrong++;
-
 			}
 
 		}
