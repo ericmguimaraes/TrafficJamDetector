@@ -25,44 +25,73 @@ import net.sf.javaml.tools.data.FileHandler;
 
 public class TrafficJamDetector {
 
-	private static void kmeans(String file, int classPosition, int k)
-			throws IOException {
+	private static void kmeans(String file, int classPosition, int k,
+			boolean escolhaAleatoria, boolean viewClusters, boolean metricas) throws IOException {
 		Dataset data = FileHandler.loadDataset(new File(file), classPosition,
 				"	");
 
 		System.out.println("------KMeans------");
+		
+		Clusterer km = null;
+		if(escolhaAleatoria){
+			System.out.println("Escolhendo centroid aleatorio");
+			km = new KMeans(k);
+		}else{
+			System.out.println("Escolhendo centroid distantes entre si");
+			km = new KmeansModified(k);
+		}
 		System.out.println("------Treinando------");
-		Clusterer km = new KMeans(k);
+		
 		Dataset[] clusters = km.cluster(data);
 		System.out.println("OK");
 		System.out.println("Cluster count: " + clusters.length);
 
-		ClusterEvaluation aic = new AICScore();
-		ClusterEvaluation bic = new BICScore();
-		ClusterEvaluation sse = new SumOfSquaredErrors();
+		if (viewClusters) {
+			for (Dataset dataset : clusters) {
+				System.out.println("*********************CLUSTER*******************");
+				int count = 0, inicio = 0, instancias = 15;
+				for (Instance instance : dataset) {
+					if (count > inicio)
+						System.out.println(instance.toString());
+					count++;
+					if (count > inicio+instancias)
+						break;
+				}
+			}
 
-		double aicScore = aic.score(clusters);
-		double bicScore = bic.score(clusters);
-		double sseScore = sse.score(clusters);
+		}
 
-		System.out.println("AIC score: " + aicScore);
-		System.out.println("BIC score: " + bicScore);
-		System.out.println("Sum of squared errors: " + sseScore);
-		
+		if (metricas) {
+			System.out.println("------Avaliando------");
+
+			//ClusterEvaluation aic = new AICScore();
+			//ClusterEvaluation bic = new BICScore();
+			ClusterEvaluation sse = new SumOfSquaredErrors();
+
+			//double aicScore = aic.score(clusters);
+			//double bicScore = bic.score(clusters);
+			double sseScore = sse.score(clusters);
+
+			//System.out.println("AIC score: " + aicScore);
+			//System.out.println("BIC score: " + bicScore);
+			System.out.println("Sum of squared errors: " + sseScore);
+
+		}
+
 	}
 
-	private static void naiveBayes(String file, int classPosition, boolean metricas)
-			throws IOException {
+	private static void naiveBayes(String file, int classPosition,
+			boolean metricas) throws IOException {
 		System.out.println("------Naive Bayes------");
 		Dataset data = FileHandler.loadDataset(new File(file), classPosition,
 				"	");
 
 		/* Discretize through EqualWidtBinning */
-//		EqualWidthBinning eb = new EqualWidthBinning(100);
-//		System.out.println("Start discretisation");
-//		eb.build(data);
-//		Dataset ddata = data.copy();
-//		eb.filter(ddata);
+//		 EqualWidthBinning eb = new EqualWidthBinning(1000);
+//		 System.out.println("Start discretisation");
+//		 eb.build(data);
+//		 Dataset ddata = data.copy();
+//		 eb.filter(ddata);
 
 		System.out.println("------Treinando------");
 		boolean useLaplace = true;
@@ -70,14 +99,12 @@ public class TrafficJamDetector {
 		Classifier nbc = new NaiveBayesClassifier(useLaplace, useLogs, false);
 		nbc.buildClassifier(data);
 		System.out.println("OK");
-		
+
 		classifica(file, classPosition, nbc, metricas);
 	}
-	
-	
 
-	public static void knn(String file, int classPosition, int k, boolean metricas)
-			throws IOException {
+	public static void knn(String file, int classPosition, int k,
+			boolean metricas) throws IOException {
 		System.out.println("------" + k + "NN------");
 
 		Dataset data = FileHandler.loadDataset(new File(file), classPosition,
@@ -89,8 +116,6 @@ public class TrafficJamDetector {
 
 		classifica(file, classPosition, knn, metricas);
 	}
-	
-	
 
 	public static void classifica(String file, int classPosition,
 			Classifier classificador, boolean metricas) throws IOException {
@@ -98,7 +123,7 @@ public class TrafficJamDetector {
 		Dataset dataForClassification = FileHandler.loadDataset(new File(file),
 				classPosition, "	");
 		int correct = 0, wrong = 0;
-		
+
 		for (Instance inst : dataForClassification) {
 			Object predictedClassValue = classificador.classify(inst);
 			Object realClassValue = inst.classValue();
@@ -123,11 +148,25 @@ public class TrafficJamDetector {
 	}
 
 	public static void main(String[] args) throws IOException {
+		String file = "pems_splitData_NB_4.csv";
+		int ClassPosition = 10;
+		boolean metricas = true;
+		boolean viewClusters = false;
+		
 		System.out.println("_____________________________");
-		naiveBayes("pems_splitData_NB_4.csv", 10, true);
+		
+		naiveBayes(file, ClassPosition, metricas);
+		
 		System.out.println("_____________________________");
-		knn("pems_splitData_NB_4.csv", 10, 10, true);
+		
+		kmeans(file, ClassPosition, 3, true, viewClusters, metricas);
+		
 		System.out.println("_____________________________");
-		kmeans("pems_splitData_NB_4.csv", 10, 3);
+		
+		kmeans(file, ClassPosition, 3, false, viewClusters, metricas);
+		
+		System.out.println("_____________________________");
+
+		knn(file, ClassPosition, 5, metricas);
 	}
 }
