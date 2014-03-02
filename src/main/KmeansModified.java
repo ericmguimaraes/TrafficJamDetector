@@ -131,7 +131,6 @@ public class KmeansModified implements Clusterer {
             for (int i = 0; i < instanceLength; i++) {
                 double dist = Math.abs(max.value(i) - min.value(i));
                 randomInstance[i] = (float) (min.value(i) + rg.nextDouble() * dist);
-
             }
 //        	double[] randomInstance = DatasetTools.getRandomInstance(data, rg);
             this.centroids[j] = new DenseInstance(randomInstance);

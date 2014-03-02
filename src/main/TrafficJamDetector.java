@@ -49,7 +49,7 @@ public class TrafficJamDetector {
 		if (viewClusters) {
 			for (Dataset dataset : clusters) {
 				System.out.println("*********************CLUSTER*******************");
-				int count = 0, inicio = 0, instancias = 15;
+				int count = 0, inicio = 0, instancias = 15; //max=26000
 				for (Instance instance : dataset) {
 					if (count > inicio)
 						System.out.println(instance.toString());
